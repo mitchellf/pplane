@@ -137,6 +137,11 @@ function drawArrow(inputX, inputY, inputAngle) {
 	plotCtx.restore();
 }
 
+/*
+Draws vector field for given functions onto plot.
+Draws 400 arrows using the drawArrow function.
+
+*/
 function drawVectorField(inputXFunc, inputYFunc) {
 	//Find a small offset from the plot boundary
 	//for visual reasons. We use 15 pixel offset
@@ -157,6 +162,7 @@ function drawVectorField(inputXFunc, inputYFunc) {
 			//and convert to degrees
 			var angle = Math.atan2(inputYFunc(tempX,tempY),
 				inputXFunc(tempX,tempY))*180/Math.PI;
+			angle = Math.round(angle);
 			drawArrow(tempX, tempY, angle);
 		}
 	}
