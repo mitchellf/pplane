@@ -22,10 +22,7 @@ function b(inputX, inputY) {
 	return -3*inputX + -2*inputY;
 }
 
-drawPlotLabels();
-drawAxes();
-drawVectorField(a,b);
-drawTrajectory(7,0,a,b);
+drawPlot();
 
 /*
 Draws plot labels onto canvas.
@@ -156,6 +153,7 @@ function drawVectorField(inputXFunc, inputYFunc) {
 	var stepX = (plot.xMax-plot.xMin)/20;
 	var stepY = (plot.yMax-plot.yMin)/20;
 
+
 	for (var i = 0; i < 20; ++i) {
 		for(var j=0; j < 20; ++j) {
 			//For clarity. Calculated values
@@ -190,6 +188,10 @@ and then 'backwards'. Only plot for a limited number of iterations
 
 */
 function drawTrajectory(initX, initY, xFunc, yFunc) {
+	//Need save and restore so trajectory
+	//drawing settings aren't used elsewhere
+	plotCtx.save();
+
 	//Set step size
 	var step = getMinScale(250);
 	//For use in drawing trajectory. We reuse initX
@@ -252,4 +254,27 @@ function drawTrajectory(initX, initY, xFunc, yFunc) {
 			i = 300;
 		}
 	}
+	plotCtx.restore();
+}
+
+function drawPlot() {
+	plotCtx.beginPath();
+	plotCtx.clearRect(0, 0, plotCanvas.width, plotCanvas.height);
+	drawPlotLabels();
+	drawAxes();
+	drawVectorField(a,b);
+}
+
+function mouseDown(event) {
+	//Mouse click position relative to plot canvas
+	var inputX = event.clientX-70;
+	var inputY = event.clientY-93;
+
+	//converting from coordinates relative to plot canvas
+	//to coordinates relative to plot
+	inputX = plot.xMin + inputX*(plot.xMax-plot.xMin)/600;
+	inputY = plot.yMax - inputY*(plot.yMax - plot.yMin)/600;
+	document.getElementById("p").innerHTML = "x: " + (inputX) + " y: " + (inputY);
+	drawPlot();
+	drawTrajectory(inputX, inputY, a, b);
 }
