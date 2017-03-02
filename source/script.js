@@ -11,18 +11,21 @@ var plot = {
 	yMin: -10
 };
 
+/*
+Test functions
+*/
+function a(inputX, inputY) {
+	return 0*inputX + 1*inputY;
+}
 
-
-
-
+function b(inputX, inputY) {
+	return -3*inputX + -2*inputY;
+}
 
 drawPlotLabels();
 drawAxes();
-
-
-
-
-
+drawVectorField(a,b);
+drawTrajectory(7,0,a,b);
 
 /*
 Draws plot labels onto canvas.
@@ -46,7 +49,7 @@ For example with default plot settings inputing (0,0)
 returns (300,300)
 
 */
-function convertXCoordinate(inputX, inputY) {
+function convertXCoordinate(inputX) {
 	//Each pixel on the plot corresponds to
 	//(xMax-xMin)/600 units.
 	//So the inputX relative to the canvas is
@@ -55,7 +58,7 @@ function convertXCoordinate(inputX, inputY) {
 	
 	//Note we do not check for division by 0 here.
 	//We catch xMax=xMin case elsewhere
-	var temp = Math.floor((inputX-plot.xMin)/((plot.xMax - plot.xMin) /600));
+	var temp = Math.floor((inputX-plot.xMin)/((plot.xMax-plot.xMin) / 600));
 	return temp;
 }
 
@@ -153,17 +156,100 @@ function drawVectorField(inputXFunc, inputYFunc) {
 	var stepX = (plot.xMax-plot.xMin)/20;
 	var stepY = (plot.yMax-plot.yMin)/20;
 
-	for (i = 0; i < 20; ++i) {
-		for(j=0; j < 20; ++j) {
-			//For clarity
-			var tempX = plot.xMin + offsetX + stepX*i;
-			var tempY = plot.yMin + offsetY + stepY*j;
+	for (var i = 0; i < 20; ++i) {
+		for(var j=0; j < 20; ++j) {
+			//For clarity. Calculated values
+			var calcX = plot.xMin + offsetX + stepX*i;
+			var calcY = plot.yMin + offsetY + stepY*j;
 			//We calculate angle of vector
 			//and convert to degrees
-			var angle = Math.atan2(inputYFunc(tempX,tempY),
-				inputXFunc(tempX,tempY))*180/Math.PI;
+			var angle = Math.atan2(
+				inputYFunc(calcX,calcY),
+				inputXFunc(calcX,calcY))
+				*180/Math.PI;
 			angle = Math.round(angle);
-			drawArrow(tempX, tempY, angle);
+			drawArrow(calcX, calcY, angle);
+		}
+	}
+}
+
+/*
+Returns smaller of (xMax-xMin)/inputScale or
+similar with yMax and yMin.
+
+*/
+function getMinScale(inputScale) {
+	return Math.min(Math.abs((plot.xMax-plot.xMin)/inputScale),
+			Math.abs((plot.yMax-plot.yMin)/inputScale));
+}
+
+/*
+Draws a trajectory for given initial condition and two dimensional
+system. First plots curve 'forward' in direction of vector field
+and then 'backwards'. Only plot for a limited number of iterations
+
+*/
+function drawTrajectory(initX, initY, xFunc, yFunc) {
+	//Set step size
+	var step = getMinScale(250);
+	//For use in drawing trajectory. We reuse initX
+	//and initY for calculations
+	var canvasX = convertXCoordinate(initX);
+	var canvasY = convertYCoordinate(initY);
+	//For use in calculations and drawing
+	var tempX = 0;
+	var tempY = 0;
+
+	plotCtx.lineWidth = 4;
+	plotCtx.lineJoin = "round";
+	
+	for(var i = 0; i < 200; ++i) {
+		plotCtx.beginPath();
+		plotCtx.moveTo(canvasX, canvasY);
+
+		//Note here that tempX and tempY represent
+		//the difference between previous and next
+		//position
+		tempX = step*xFunc(initX, initY);
+		tempY = step*yFunc(initX, initY);
+		initX += tempX;
+		initY += tempY;
+		canvasX = convertXCoordinate(initX);
+		canvasY = convertYCoordinate(initY);
+
+		//Check to see how 'fast' particle is moving.
+		//indigo slow, red FAST.
+		//We compare speeds by finding the minimum difference
+		//between next and previous position and comparing
+		//it with some percentage of the step size.
+		//This should give us an idea of speed relative to
+		//the plot and it's boundaries
+		if (step >= Math.abs(Math.min(tempX,tempY))) {
+			plotCtx.strokeStyle = "indigo";
+		} else if (2*step >= Math.abs(Math.min(tempX,tempY))) {
+			plotCtx.strokeStyle = "blue";
+		} else if (5*step >= Math.abs(Math.min(tempX,tempY))) {
+			plotCtx.strokeStyle = "green";
+		} else if (10*step >= Math.abs(Math.min(tempX,tempY))) {
+			plotCtx.strokeStyle = "yellow";
+		} else if (15*step >= Math.abs(Math.min(tempX,tempY))) {
+			plotCtx.strokeStyle = "orange";
+		} else if (25*step >= Math.abs(Math.min(tempX,tempY))) {
+			plotCtx.strokeStyle = "orange";
+		} else {
+			plotCtx.strokeStyle = "red";
+		}
+		plotCtx.lineTo(canvasX, canvasY)
+		plotCtx.stroke();
+		plotCtx.closePath();
+
+		//Check to see if we are very near a fixed point
+		//or moving out of the plot boundary.
+		//If so set i to 300 and break loop
+		if (initX < plot.xMin ||initX > plot.xMax
+			|| initY < plot.yMin || initY > plot.yMax
+			|| Math.max(Math.abs(tempX),Math.abs(tempY)) <= 0.001*step) {
+			i = 300;
 		}
 	}
 }
