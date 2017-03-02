@@ -11,8 +11,18 @@ var plot = {
 	yMin: -10
 };
 
+
+
+
+
+
 drawPlotLabels();
 drawAxes();
+
+
+
+
+
 
 /*
 Draws plot labels onto canvas.
@@ -125,4 +135,29 @@ function drawArrow(inputX, inputY, inputAngle) {
 
 	plotCtx .closePath();
 	plotCtx.restore();
+}
+
+function drawVectorField(inputXFunc, inputYFunc) {
+	//Find a small offset from the plot boundary
+	//for visual reasons. We use 15 pixel offset
+	var offsetX = 15*(plot.xMax-plot.xMin)/600;
+	var offsetY = 15*(plot.yMax-plot.yMin)/600;
+	
+	//Find a step size to give us 20 arrows in
+	//each direction
+	var stepX = (plot.xMax-plot.xMin)/20;
+	var stepY = (plot.yMax-plot.yMin)/20;
+
+	for (i = 0; i < 20; ++i) {
+		for(j=0; j < 20; ++j) {
+			//For clarity
+			var tempX = plot.xMin + offsetX + stepX*i;
+			var tempY = plot.yMin + offsetY + stepY*j;
+			//We calculate angle of vector
+			//and convert to degrees
+			var angle = Math.atan2(inputYFunc(tempX,tempY),
+				inputXFunc(tempX,tempY))*180/Math.PI;
+			drawArrow(tempX, tempY, angle);
+		}
+	}
 }
