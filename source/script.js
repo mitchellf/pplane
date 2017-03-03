@@ -11,6 +11,11 @@ var plot = {
 	yMin: -5,
 	//Function selected on drop down
 	selectedFunc: 0,
+	//Coefficients for matrix entry
+	a: -1,
+	b: -2,
+	c: -1,
+	d: 2,
 	//Functions available through drop down
 	funcs: [
 		firstX,
@@ -26,11 +31,25 @@ var plot = {
 		]
 };
 
+//These could probably be put somehwere else
+function matrixXFunc(inputX,inputY) {
+	return plot.a*inputX + plot.b*inputY;
+}
+
+function matrixYFunc(inputX,inputY) {
+	return plot.c*inputX + plot.d*inputY;
+}
+
+
+
 
 
 window.onload = function(){
-	drawPlot();
+	drawPlot(plot.funcs[2*plot.selectedFunc],
+		plot.funcs[2*plot.selectedFunc+1]);
 }
+
+
 
 
 
@@ -272,7 +291,7 @@ function drawTrajectory(initX, initY, xFunc, yFunc) {
 Clears the canvases and draws the plot.
 
 */
-function drawPlot() {
+function drawPlot(inXFunc, inYFunc) {
 	plotCtx.beginPath();
 	plotCtx.clearRect(0, 0, 600, 600);
 	mainCtx.beginPath();
@@ -282,8 +301,7 @@ function drawPlot() {
 	//We send the 2*ith and 2*ith+1 functions
 	//from the plot.funcs array to the
 	//drawVectorField function here
-	drawVectorField(plot.funcs[2*plot.selectedFunc],
-		plot.funcs[2*plot.selectedFunc+1]);
+	drawVectorField(inXFunc, inYFunc);
 }
 
 /*
@@ -291,6 +309,7 @@ Handles user click on plot canvas.
 
 */
 function mouseDown(event) {
+	
 	//Mouse click position relative to plot canvas
 	var inputX = event.pageX-70;
 	var inputY = event.pageY-100;
@@ -299,15 +318,27 @@ function mouseDown(event) {
 	//to coordinates relative to plot
 	inputX = plot.xMin + inputX*(plot.xMax-plot.xMin)/600;
 	inputY = plot.yMax - inputY*(plot.yMax - plot.yMin)/600;
-	drawPlot();
+	drawPlot(matrixXFunc, matrixYFunc);
 	//We send the 2*ith and 2*ith+1 functions
 	//from the plot.funcs array to the
 	//drawTrajectory function here
-	drawTrajectory(inputX, inputY,
-		plot.funcs[2*plot.selectedFunc],
-		plot.funcs[2*plot.selectedFunc+1]);
-}
 
+	//If drop down selection radio button selected
+	//use funcs array of vector functions
+	//else use matrix stuff
+	if(document.getElementById("dropDownRadio").checked) {
+		drawPlot(plot.funcs[2*plot.selectedFunc],
+			plot.funcs[2*plot.selectedFunc+1]);
+		//We send the 2*ith and 2*ith+1 functions
+		//from the plot.funcs array to the
+		//drawTrajectory function here
+		drawTrajectory(inputX, inputY,
+			plot.funcs[2*plot.selectedFunc],
+			plot.funcs[2*plot.selectedFunc+1]);
+	} else {
+		drawTrajectory(inputX, inputY, matrixXFunc, matrixYFunc);
+	}
+}
 /*
 Handles button down on plotVectorField button. Updates various user interface
 entries in the scipt file. Handles basic entry validation.
@@ -334,7 +365,8 @@ function buttonDown() {
 		plot.xMax = inputXMax;
 		plot.yMin = inputYMin;
 		plot.yMax = inputYMax;
-		drawPlot();
+		drawPlot(plot.funcs[2*plot.selectedFunc],
+			plot.funcs[2*plot.selectedFunc+1]);
 	}
 }
 
@@ -346,7 +378,7 @@ For dropDown.
 function dropDownRadio() {
 	document.getElementById("dropDownForm").style.display = "block";
 	document.getElementById("matrixEntryForm").style.display = "none";
-	resetPlot();
+	resetPlot(-10,10,-10,10);
 }
 
 /*
@@ -357,7 +389,7 @@ For matrixEntry.
 function matrixEntryRadio() {
 	document.getElementById("dropDownForm").style.display = "none";
 	document.getElementById("matrixEntryForm").style.display = "block";
-	resetPlot();
+	resetPlot(-5,5,-5,5);
 }
 
 /*
@@ -368,12 +400,55 @@ xfunc = firstX
 yfunc = firstY
 
 */
-function resetPlot() {
-	plot.xMin = -10;
-	plot.xMax = 10;
-	plot.yMin = -10;
-	plot.yMax = 10;
+function resetPlot(inMinX, inMaxX, inMinY, inMaxY) {
+	plot.xMin = inMinX;
+	plot.xMax = inMaxX;
+	plot.yMin = inMinY;
+	plot.yMax = inMaxY;
 	plot.selectedFunc = 0;
 
-	drawPlot();
+	//Check if dropDown radio is selected.
+	if(document.getElementById("dropDownRadio").checked) {
+		drawPlot(plot.funcs[2*plot.selectedFunc],
+			plot.funcs[2*plot.selectedFunc+1]);
+	} else {
+		drawPlot(matrixXFunc, matrixYFunc);
+	}
 }
+
+/*
+Change a coefficient value based on slider
+*/
+function aSliderChange() {
+	plot.a = document.getElementById("aSlider").value;
+	document.getElementById("aSliderLabel").innerHTML = "a: " + plot.a;
+	drawPlot(matrixXFunc, matrixYFunc);
+}
+
+/*
+Change b coefficient value based on slider
+*/
+function bSliderChange() {
+	plot.b = document.getElementById("bSlider").value;
+	document.getElementById("bSliderLabel").innerHTML = "b: " + plot.b;
+	drawPlot(matrixXFunc, matrixYFunc);
+}
+
+/*
+Change c coefficient value based on slider
+*/
+function cSliderChange() {
+	plot.c = document.getElementById("cSlider").value;
+	document.getElementById("cSliderLabel").innerHTML = "c: " + plot.c;
+	drawPlot(matrixXFunc, matrixYFunc);
+}
+
+/*
+Change a coefficient value based on slider
+*/
+function dSliderChange() {
+	plot.d = document.getElementById("dSlider").value;
+	document.getElementById("dSliderLabel").innerHTML = "d: " + plot.d;
+	drawPlot(matrixXFunc, matrixYFunc);
+}
+

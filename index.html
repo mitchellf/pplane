@@ -17,30 +17,30 @@
 	<div id="radioSelectionsDiv">
 	<label for = "dropDownRadio">drop down</label>
 	<input type="radio" id="dropDownRadio" name = "radioSelect" checked="checked"
-		onclick = "dropDownRadio()"></input>
+		onclick = "dropDownRadio()" tabindex = 1></input>
 	<label for = "dropDownRadio">matrix entry</label>
 	<input type="radio" id="matrix entry selection" name = "radioSelect"
-		onclick = "matrixEntryRadio()">
+		onclick = "matrixEntryRadio()" tabindex = 2>
 	</div>
 
 	<form id = "dropDownForm">
 		<div id = "boundsDiv">
 		<label for ="xmin">min x: </label>
-		<input type="number" id="xmin" value = -5 tabindex = 1 required step = "any">
+		<input type="number" id="xmin" value = -5 tabindex = 3 required step = "any">
 		<label for ="xmax">max x: </label>
-		<input type="number" id="xmax" value = 5 tabindex = 2 required step = "any">
+		<input type="number" id="xmax" value = 5 tabindex = 4 required step = "any">
 
 		<br>
 
 		<label for ="ymin">min y: </label>
-		<input type="number" id="ymin" value = -5 tabindex = 3 required step = "any">
+		<input type="number" id="ymin" value = -5 tabindex = 5 required step = "any">
 		<label for ="ymax">max y: </label>
-		<input type="number" id="ymax" value = 5 tabindex = 4 required step = "any">
+		<input type="number" id="ymax" value = 5 tabindex = 6 required step = "any">
 		</div>
 
 		<div id = "funcDropDownDiv">
 		<label for ="selectFuncs">select functions: </label>
-		<select id = "selectFuncs" tabindex = 5>
+		<select id = "selectFuncs" tabindex = 7>
 			<option selected>x' = x-y; y' = x+y</option>
 			<option>x' = 2x-y; y' = x+2y</option>
 			<option>x' = y; y' = x-x^3 </option>
@@ -50,15 +50,30 @@
 		</div>
 
 		<div id = "plotButtonDiv">
-		<button id = "plotButton" type = "button" tabindex = 6 onclick = "buttonDown()">
+		<button id = "plotButton" type = "button" tabindex = 6 onclick = "buttonDown()"
+			tabindex = 9>
 		Plot vector field
 		</button>
 		</div>
+		<p id = "alertPar"></p>
 	</form>
 
-	<form id = "matrixEntryForm"></form>
-
-	<p id = "alertPar"></p>
+	<form id = "matrixEntryForm" style = "display: none">
+		<p id = "matrixDescriptionPar">System <br> x' = ax + by <br> y' = cx + dy</p>
+		<div id = "slidersDiv">
+		<input id = "aSlider" type = "range" value = 0 min = -5 max = 5 step = 0.1
+			onchange = "aSliderChange()">
+		<label id = "aSliderLabel" for = "aSlider">a: 0</label><br>
+		<input id = "bSlider" type = "range" value = 0 min = -5 max = 5 step = 0.1
+			onchange = "bSliderChange()">
+		<label id = "bSliderLabel" for = "bSlider">b: 0</label><br>
+		<input id = "cSlider" type = "range" value = 0 min = -5 max = 5 step = 0.1
+			onchange = "cSliderChange()">
+		<label id = "cSliderLabel" for = "cSlider">c: 0</label><br>
+		<input id = "dSlider" type = "range" value = 0 min = -5 max = 5 step = 0.1
+			onchange = "dSliderChange()">
+		<label id = "dSliderLabel" for = "dSlider">a: 0</label>
+	</form>
 
 	<script src = "source/vectorFunctions.js"></script>
 	<script src = "source/script.js"></script>

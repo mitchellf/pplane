@@ -44,6 +44,18 @@
 	top: 300px;
 }
 
+#matrixDescriptionPar {
+	position: absolute;
+	left: 800px;
+	top: 150px;
+}
+
+#slidersDiv {
+	position:absolute;
+	left: 800px;
+	top: 300px;
+}
+
 input[type=number] {
 	width: 20%;
 	margin: 2px 0;
