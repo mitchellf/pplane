@@ -7,29 +7,38 @@
 <head>
 	<title> Phase Plane Application </title>
 	<h2> Phase Plane Application </h2>
-<style>
-#mainCanvas {
-	position: absolute;
-	z-index: 1;
-	top:100px;
-	left:20px;
-	background-color: transparent;
-}
-
-#plotCanvas {
-	position: absolute;
-	z-index: 2;
-	left: 70px;
-	top: 150px;
-	border: 1px solid black;
-}
-</style>
+	<link rel = "stylesheet" type="text/css" href="source/style.css">
 </head>
 
 <body>
-	<p id = "p">aaaaa</p>
 	<canvas id = "mainCanvas" width="700" height="700"></canvas>
 	<canvas id = "plotCanvas" width="600" height="600" onmousedown = "mouseDown(event)"></canvas>
+	
+	<form id = "plotBoundsForm">
+		min x:
+		<input type="text" name="xmin" tabindex = 1>
+		max y:
+		<input type="text" name="xmax" tabindex = 2>
+		<br>
+		min y:
+		<input type="text" name="ymin" tabindex = 3>
+		max y:
+		<input type="text" name="ymax" tabindex = 4>
+	</form>
+
+	<form id = "selectFuncsForm">
+		Select functions:
+		<select id = "selectFuncs" onchange = "updateSelectedFunc()">
+			<option value="func1">x' = x-y; y' = x+y</option>
+			<option value="func2">x' = 2x-y; y' = x+2y</option>
+		</select>
+	</form>
+
+	<form id =  "plotButtonForm">
+		<button type = "button" onclick = "buttonDown()">
+		Plot vector field
+	</form>
+ 
 	<script src = "source/script.js"></script>
 </body>
 </html>

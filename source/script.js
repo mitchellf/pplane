@@ -8,21 +8,45 @@ var plot = {
 	xMax: 10,
 	xMin: -10,
 	yMax: 10,
-	yMin: -10
+	yMin: -10,
+	//Function selected on drop down
+	selectedFunc: document.getElementById("selectFuncs").selectedIndex,
+	//Functions available through drop down
+	funcs: [
+		firstX,
+		firstY,
+		secondX,
+		secondY
+		]
 };
 
-/*
-Test functions
-*/
-function a(inputX, inputY) {
-	return 0*inputX + 1*inputY;
+function firstX(inputX, inputY) {
+	return 1*inputX + -1*inputY;
 }
 
-function b(inputX, inputY) {
-	return -3*inputX + -2*inputY;
+function firstY(inputX, inputY) {
+	return 1*inputX + 1*inputY;
 }
+
+function secondX(inputX, inputY) {
+	return 2*inputX + -1*inputY;
+}
+
+function secondY(inputX, inputY) {
+	return 1*inputX + 2*inputY;
+}
+
+
+
 
 drawPlot();
+
+
+
+
+
+
+
 
 /*
 Draws plot labels onto canvas.
@@ -32,11 +56,13 @@ Default plot with (0,0) at center and
 */
 function drawPlotLabels() {
 	//Set custom font for plot labels
+	mainCtx.save();
 	mainCtx.font = "15px sans-serif";
 	mainCtx.fillText(String(plot.yMax), 10, 65);
 	mainCtx.fillText(String(plot.yMin), 10, 650);
 	mainCtx.fillText(String(plot.xMin), 50, 690);
 	mainCtx.fillText(String(plot.xMax), 635, 690);
+	mainCtx.restore();
 }
 
 /*
@@ -248,8 +274,8 @@ function drawTrajectory(initX, initY, xFunc, yFunc) {
 		//Check to see if we are very near a fixed point
 		//or moving out of the plot boundary.
 		//If so set i to 300 and break loop
-		if (initX < plot.xMin ||initX > plot.xMax
-			|| initY < plot.yMin || initY > plot.yMax
+		if (initX < plot.xMin-50*step ||initX > plot.xMax + 50*step
+			|| initY < plot.yMin - 50*step|| initY > plot.yMax + 50*step
 			|| Math.max(Math.abs(tempX),Math.abs(tempY)) <= 0.001*step) {
 			i = 300;
 		}
@@ -257,24 +283,59 @@ function drawTrajectory(initX, initY, xFunc, yFunc) {
 	plotCtx.restore();
 }
 
+/*
+Clears the canvases and draws the plot.
+
+*/
 function drawPlot() {
 	plotCtx.beginPath();
-	plotCtx.clearRect(0, 0, plotCanvas.width, plotCanvas.height);
+	plotCtx.clearRect(0, 0, 600, 600);
+	mainCtx.beginPath();
+	mainCtx.clearRect(0,0,700, 700);
 	drawPlotLabels();
 	drawAxes();
-	drawVectorField(a,b);
+	//We send the 2*ith and 2*ith+1 functions
+	//from the plot.funcs array to the
+	//drawVectorField function here
+	drawVectorField(plot.funcs[2*plot.selectedFunc],
+		plot.funcs[2*plot.selectedFunc+1]);
 }
 
+/*
+Handles user click on plot canvas.
+
+*/
 function mouseDown(event) {
 	//Mouse click position relative to plot canvas
-	var inputX = event.clientX-70;
-	var inputY = event.clientY-93;
+	var inputX = event.pageX-70;
+	var inputY = event.pageY-100;
 
 	//converting from coordinates relative to plot canvas
 	//to coordinates relative to plot
 	inputX = plot.xMin + inputX*(plot.xMax-plot.xMin)/600;
 	inputY = plot.yMax - inputY*(plot.yMax - plot.yMin)/600;
-	document.getElementById("p").innerHTML = "x: " + (inputX) + " y: " + (inputY);
 	drawPlot();
-	drawTrajectory(inputX, inputY, a, b);
+	//We send the 2*ith and 2*ith+1 functions
+	//from the plot.funcs array to the
+	//drawTrajectory function here
+	drawTrajectory(inputX, inputY,
+		plot.funcs[2*plot.selectedFunc],
+		plot.funcs[2*plot.selectedFunc+1]);
+}
+
+/*
+Updates the selected function when user selects new function
+via drop down menu
+
+*/
+function updateSelectedFunc() {
+	plot.selectedFunc =  document.getElementById("selectFuncs").selectedIndex;
+}
+
+/*
+Handles button down on plotVectorField button.
+
+*/
+function buttonDown() {
+	drawPlot();
 }

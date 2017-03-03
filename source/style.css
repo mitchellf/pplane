@@ -1,0 +1,41 @@
+#mainCanvas {
+	position: absolute;
+	z-index: 1;
+	top:50px;
+	left:20px;
+	background-color: transparent;
+}
+
+#plotCanvas {
+	position: absolute;
+	z-index: 2;
+	top: 100px;
+	left: 70px;
+	border: 1px solid black;
+}
+
+
+#plotBoundsForm {
+	position: absolute;
+	left: 800px;	
+	top: 100px;
+	box-sizing: border-box;
+}
+
+#selectFuncsForm {
+	position: absolute;
+	left:800px;
+	top: 200px;
+}
+
+#plotButtonForm {
+	position: absolute;
+	left:800px;
+	top: 300px;
+}
+
+
+input[type=text] {
+	width: 20%;
+	margin: 2px 0;
+}
