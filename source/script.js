@@ -5,10 +5,10 @@ var plotCtx = plotCanvas.getContext("2d");
 
 var plot = {
 	//Plot bounds
-	xMax: 10,
-	xMin: -10,
-	yMax: 10,
-	yMin: -10,
+	xMax: 5,
+	xMin: -5,
+	yMax: 5,
+	yMin: -5,
 	//Function selected on drop down
 	selectedFunc: 0,
 	//Functions available through drop down
@@ -16,7 +16,13 @@ var plot = {
 		firstX,
 		firstY,
 		secondX,
-		secondY
+		secondY,
+		thirdX,
+		thirdY,
+		fourthX,
+		fourthY,
+		fifthX,
+		fifthY
 		]
 };
 
@@ -198,7 +204,7 @@ function drawTrajectory(initX, initY, xFunc, yFunc) {
 	plotCtx.save();
 
 	//Set step size
-	var step = getMinScale(250);
+	var step = getMinScale(200);
 	//For use in drawing trajectory. We reuse initX
 	//and initY for calculations
 	var canvasX = convertXCoordinate(initX);
@@ -210,7 +216,7 @@ function drawTrajectory(initX, initY, xFunc, yFunc) {
 	plotCtx.lineWidth = 4;
 	plotCtx.lineJoin = "round";
 
-	for(var i = 0; i < 200; ++i) {
+	for(var i = 0; i < 250; ++i) {
 		plotCtx.beginPath();
 		plotCtx.moveTo(canvasX, canvasY);
 
@@ -313,7 +319,7 @@ function buttonDown() {
 	var inputYMin = Number(document.getElementById("ymin").value);
 	var inputYMax = Number(document.getElementById("ymax").value);
 	var validInput =
-		document.getElementById("form").checkValidity();
+		document.getElementById("dropDownForm").checkValidity();
 	var alert = document.getElementById("alertPar");
 	
 	//Check if invalid state
@@ -332,11 +338,42 @@ function buttonDown() {
 	}
 }
 
+/*
+Handles change in selection modes from radio button.
+For dropDown.
 
+*/
+function dropDownRadio() {
+	document.getElementById("dropDownForm").style.display = "block";
+	document.getElementById("matrixEntryForm").style.display = "none";
+	resetPlot();
+}
 
+/*
+Handles change in selection modes from radio button.
+For matrixEntry.
 
+*/
+function matrixEntryRadio() {
+	document.getElementById("dropDownForm").style.display = "none";
+	document.getElementById("matrixEntryForm").style.display = "block";
+	resetPlot();
+}
 
+/*
+Resets the plot to a default setting.
+xmin/max = -+10;
+ymin/max = -+10;
+xfunc = firstX
+yfunc = firstY
 
+*/
+function resetPlot() {
+	plot.xMin = -10;
+	plot.xMax = 10;
+	plot.yMin = -10;
+	plot.yMax = 10;
+	plot.selectedFunc = 0;
 
-
-
+	drawPlot();
+}

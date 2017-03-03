@@ -14,26 +14,38 @@
 	<canvas id = "mainCanvas" width="700" height="700"></canvas>
 	<canvas id = "plotCanvas" width="600" height="600" onmousedown = "mouseDown(event)"></canvas>
 	
-	<form id = "form">
+	<div id="radioSelectionsDiv">
+	<label for = "dropDownRadio">drop down</label>
+	<input type="radio" id="dropDownRadio" name = "radioSelect" checked="checked"
+		onclick = "dropDownRadio()"></input>
+	<label for = "dropDownRadio">matrix entry</label>
+	<input type="radio" id="matrix entry selection" name = "radioSelect"
+		onclick = "matrixEntryRadio()">
+	</div>
+
+	<form id = "dropDownForm">
 		<div id = "boundsDiv">
 		<label for ="xmin">min x: </label>
-		<input type="number" id="xmin" value = -10 tabindex = 1 required step = "any">
+		<input type="number" id="xmin" value = -5 tabindex = 1 required step = "any">
 		<label for ="xmax">max x: </label>
-		<input type="number" id="xmax" value = 10 tabindex = 2 required step = "any">
+		<input type="number" id="xmax" value = 5 tabindex = 2 required step = "any">
 
 		<br>
 
 		<label for ="ymin">min y: </label>
-		<input type="number" id="ymin" value = -10 tabindex = 3 required step = "any">
+		<input type="number" id="ymin" value = -5 tabindex = 3 required step = "any">
 		<label for ="ymax">max y: </label>
-		<input type="number" id="ymax" value = 10 tabindex = 4 required step = "any">
+		<input type="number" id="ymax" value = 5 tabindex = 4 required step = "any">
 		</div>
 
 		<div id = "funcDropDownDiv">
 		<label for ="selectFuncs">select functions: </label>
 		<select id = "selectFuncs" tabindex = 5>
-			<option value = "0" selected>x' = x-y; y' = x+y</option>
-			<option value = "1">x' = 2x-y; y' = x+2y</option>
+			<option selected>x' = x-y; y' = x+y</option>
+			<option>x' = 2x-y; y' = x+2y</option>
+			<option>x' = y; y' = x-x^3 </option>
+			<option>x' = y-y^3; y' = -x-y^2 </option>
+			<option>x' = y; y' = -sin(x) </option> 
 		</select>
 		</div>
 
@@ -43,6 +55,8 @@
 		</button>
 		</div>
 	</form>
+
+	<form id = "matrixEntryForm"></form>
 
 	<p id = "alertPar"></p>
 

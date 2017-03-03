@@ -14,30 +14,34 @@
 	border: 1px solid black;
 }
 
+#radioSelectionsDiv {
+	position: absolute;
+	left: 800px;
+	top: 100px;
+}
 
 #boundsDiv {
 	position: absolute;
 	left: 800px;	
-	top: 100px;
+	top: 130px;
 }
-
 
 #funcDropDownDiv {
 	position: absolute;
 	left:800px;
-	top: 200px;
+	top: 220px;
 }
 
 #plotButtonDiv {
 	position: absolute;
 	left:800px;
-	top: 300px;
+	top: 270px;
 }
 
 #alertPar {
 	position: absolute;
 	left: 800px;
-	top: 330px;
+	top: 300px;
 }
 
 input[type=number] {
