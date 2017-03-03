@@ -14,31 +14,39 @@
 	<canvas id = "mainCanvas" width="700" height="700"></canvas>
 	<canvas id = "plotCanvas" width="600" height="600" onmousedown = "mouseDown(event)"></canvas>
 	
-	<form id = "plotBoundsForm">
-		min x:
-		<input type="text" name="xmin" tabindex = 1>
-		max y:
-		<input type="text" name="xmax" tabindex = 2>
+	<form id = "form">
+		<div id = "boundsDiv">
+		<label for ="xmin">min x: </label>
+		<input type="number" id="xmin" value = -10 tabindex = 1 required step = "any">
+		<label for ="xmax">max x: </label>
+		<input type="number" id="xmax" value = 10 tabindex = 2 required step = "any">
+
 		<br>
-		min y:
-		<input type="text" name="ymin" tabindex = 3>
-		max y:
-		<input type="text" name="ymax" tabindex = 4>
-	</form>
 
-	<form id = "selectFuncsForm">
-		Select functions:
-		<select id = "selectFuncs" onchange = "updateSelectedFunc()">
-			<option value="func1">x' = x-y; y' = x+y</option>
-			<option value="func2">x' = 2x-y; y' = x+2y</option>
+		<label for ="ymin">min y: </label>
+		<input type="number" id="ymin" value = -10 tabindex = 3 required step = "any">
+		<label for ="ymax">max y: </label>
+		<input type="number" id="ymax" value = 10 tabindex = 4 required step = "any">
+		</div>
+
+		<div id = "funcDropDownDiv">
+		<label for ="selectFuncs">select functions: </label>
+		<select id = "selectFuncs" tabindex = 5>
+			<option value = "0" selected>x' = x-y; y' = x+y</option>
+			<option value = "1">x' = 2x-y; y' = x+2y</option>
 		</select>
+		</div>
+
+		<div id = "plotButtonDiv">
+		<button id = "plotButton" type = "button" tabindex = 6 onclick = "buttonDown()">
+		Plot vector field
+		</button>
+		</div>
 	</form>
 
-	<form id =  "plotButtonForm">
-		<button type = "button" onclick = "buttonDown()">
-		Plot vector field
-	</form>
- 
+	<p id = "alertPar"></p>
+
+	<script src = "source/vectorFunctions.js"></script>
 	<script src = "source/script.js"></script>
 </body>
 </html>

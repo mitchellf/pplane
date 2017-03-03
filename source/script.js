@@ -10,7 +10,7 @@ var plot = {
 	yMax: 10,
 	yMin: -10,
 	//Function selected on drop down
-	selectedFunc: document.getElementById("selectFuncs").selectedIndex,
+	selectedFunc: 0,
 	//Functions available through drop down
 	funcs: [
 		firstX,
@@ -20,31 +20,11 @@ var plot = {
 		]
 };
 
-function firstX(inputX, inputY) {
-	return 1*inputX + -1*inputY;
+
+
+window.onload = function(){
+	drawPlot();
 }
-
-function firstY(inputX, inputY) {
-	return 1*inputX + 1*inputY;
-}
-
-function secondX(inputX, inputY) {
-	return 2*inputX + -1*inputY;
-}
-
-function secondY(inputX, inputY) {
-	return 1*inputX + 2*inputY;
-}
-
-
-
-
-drawPlot();
-
-
-
-
-
 
 
 
@@ -179,7 +159,6 @@ function drawVectorField(inputXFunc, inputYFunc) {
 	var stepX = (plot.xMax-plot.xMin)/20;
 	var stepY = (plot.yMax-plot.yMin)/20;
 
-
 	for (var i = 0; i < 20; ++i) {
 		for(var j=0; j < 20; ++j) {
 			//For clarity. Calculated values
@@ -230,7 +209,7 @@ function drawTrajectory(initX, initY, xFunc, yFunc) {
 
 	plotCtx.lineWidth = 4;
 	plotCtx.lineJoin = "round";
-	
+
 	for(var i = 0; i < 200; ++i) {
 		plotCtx.beginPath();
 		plotCtx.moveTo(canvasX, canvasY);
@@ -324,18 +303,40 @@ function mouseDown(event) {
 }
 
 /*
-Updates the selected function when user selects new function
-via drop down menu
-
-*/
-function updateSelectedFunc() {
-	plot.selectedFunc =  document.getElementById("selectFuncs").selectedIndex;
-}
-
-/*
-Handles button down on plotVectorField button.
+Handles button down on plotVectorField button. Updates various user interface
+entries in the scipt file. Handles basic entry validation.
 
 */
 function buttonDown() {
-	drawPlot();
+	var inputXMin = Number(document.getElementById("xmin").value);
+	var inputXMax = Number(document.getElementById("xmax").value);
+	var inputYMin = Number(document.getElementById("ymin").value);
+	var inputYMax = Number(document.getElementById("ymax").value);
+	var validInput =
+		document.getElementById("form").checkValidity();
+	var alert = document.getElementById("alertPar");
+	
+	//Check if invalid state
+	if (inputXMax <= inputXMin || inputYMax <= inputYMin
+		|| !(validInput)) {
+		alert.innerHTML = "Invalid Entry. Please try again.";
+	//If no invalid state set values and plot
+	} else {
+		alert.innerHTML = "";
+		plot.selectedFunc = document.getElementById("selectFuncs").selectedIndex;
+		plot.xMin = inputXMin;
+		plot.xMax = inputXMax;
+		plot.yMin = inputYMin;
+		plot.yMax = inputYMax;
+		drawPlot();
+	}
 }
+
+
+
+
+
+
+
+
+

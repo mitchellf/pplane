@@ -15,27 +15,32 @@
 }
 
 
-#plotBoundsForm {
+#boundsDiv {
 	position: absolute;
 	left: 800px;	
 	top: 100px;
-	box-sizing: border-box;
 }
 
-#selectFuncsForm {
+
+#funcDropDownDiv {
 	position: absolute;
 	left:800px;
 	top: 200px;
 }
 
-#plotButtonForm {
+#plotButtonDiv {
 	position: absolute;
 	left:800px;
 	top: 300px;
 }
 
+#alertPar {
+	position: absolute;
+	left: 800px;
+	top: 330px;
+}
 
-input[type=text] {
+input[type=number] {
 	width: 20%;
 	margin: 2px 0;
 }
