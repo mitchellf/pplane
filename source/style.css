@@ -6,69 +6,79 @@ html {
 	box-sizing: border-box;
 }
 
+h2 {
+	padding-bottom: 0;
+	margin-bottom: 0;
+}
+
 /*Webpage is divided into two columns.
 Each column is in the same row*/
+[class$=Column] {
+	width: 100%
+}
 
 [class$=Column] {
 	float: left;
-	padding: 10px;
+	padding: 16px;
 }
 
-/*Settings for small screen devices*/
-[class$=Column] {
-	width: 100%;
+/*plotColumn styling*/
+.plotColumn {
+	width: 900px;
 }
 
-/*Settings for all other devices*/
-@media only screen and (min-width: 1300px) {
-	.plotColumn {width: 900px;}
-	.otherColumn {width: 400px;}
-}
-
-.row::after {
-	content: "";
-	clear: both;
-	display: table;
-}
-
-/*Plot column settings*/
-h2 {
-	padding: 0;
-	margin: 0;
+#info {
+	margin-top: 0;
+	padding-top: 0;
 }
 
 canvas {
+	margin: auto;
+	display: block;
 	width: 800px;
 	height: 800px;
-	border: 2px solid black;
+	border: 1px solid;
+}
+	
+/*otherColumn styling*/
+.otherColumn {
+	width: 400px;
 }
 
-/*Other column settings*/
-.modeRadioDiv {
-	padding: 2px;
+#boundsForm {
+	padding: 10px;
 }
 
-.plotBoundsDiv {
-	min-width: 400px;
-	padding: 8px;
-}
-
-.sliderDiv {
+.boundsDiv {
+	padding: 5px;
 	width: 100%;
-	padding: 8px;
+	min-width: 350px;
 }
 
-Form {
-	padding: 8px;
+.selectDiv {
+	padding: 10px;
+}
+
+.buttonDiv {
+	padding: 10px;
 }
 
 input[type = "number"] {
-	width: 70px;
+	width: 100px;	
 }
 
-input[type = "range"] {
-	width: 50%;
-	min-width: 170px;
-	max-width: 250px;
-	
+[class$=SliderDiv] {
+	min-width: 350px;	
+}
+
+#matrixForm {
+	display: none;
+}
+
+#manualForm {
+	display: none;
+}
+
+#invalidPar {
+	display: none;
 }
