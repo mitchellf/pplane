@@ -1,62 +1,74 @@
-#mainCanvas {
-	position: absolute;
-	z-index: 1;
-	top:50px;
-	left:20px;
-	background-color: transparent;
+html {
+	font-family: "Lucida Sans", sans-serif;
 }
 
-#plotCanvas {
-	position: absolute;
-	z-index: 2;
-	top: 100px;
-	left: 70px;
-	border: 1px solid black;
+* {
+	box-sizing: border-box;
 }
 
-#radioSelectionsDiv {
-	position: absolute;
-	left: 800px;
-	top: 100px;
+/*Webpage is divided into two columns.
+Each column is in the same row*/
+
+[class$=Column] {
+	float: left;
+	padding: 10px;
 }
 
-#boundsDiv {
-	position: absolute;
-	left: 800px;	
-	top: 130px;
+/*Settings for small screen devices*/
+[class$=Column] {
+	width: 100%;
 }
 
-#funcDropDownDiv {
-	position: absolute;
-	left:800px;
-	top: 220px;
+/*Settings for all other devices*/
+@media only screen and (min-width: 1300px) {
+	.plotColumn {width: 900px;}
+	.otherColumn {width: 400px;}
 }
 
-#plotButtonDiv {
-	position: absolute;
-	left:800px;
-	top: 270px;
+.row::after {
+	content: "";
+	clear: both;
+	display: table;
 }
 
-#alertPar {
-	position: absolute;
-	left: 800px;
-	top: 300px;
+/*Plot column settings*/
+h2 {
+	padding: 0;
+	margin: 0;
 }
 
-#matrixDescriptionPar {
-	position: absolute;
-	left: 800px;
-	top: 150px;
+canvas {
+	width: 800px;
+	height: 800px;
+	border: 2px solid black;
 }
 
-#slidersDiv {
-	position:absolute;
-	left: 800px;
-	top: 300px;
+/*Other column settings*/
+.modeRadioDiv {
+	padding: 2px;
 }
 
-input[type=number] {
-	width: 20%;
-	margin: 2px 0;
+.plotBoundsDiv {
+	min-width: 400px;
+	padding: 8px;
+}
+
+.sliderDiv {
+	width: 100%;
+	padding: 8px;
+}
+
+Form {
+	padding: 8px;
+}
+
+input[type = "number"] {
+	width: 70px;
+}
+
+input[type = "range"] {
+	width: 50%;
+	min-width: 170px;
+	max-width: 250px;
+	
 }
