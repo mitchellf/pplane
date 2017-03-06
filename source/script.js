@@ -8,7 +8,7 @@ var plot = {
 	xmax: 10,
 	ymin: -10,
 	ymax: 10,
-	xFunc: firstX, 
+	xFunc: firstX,
 	yFunc: firstY
 }
 
@@ -148,17 +148,21 @@ function drawVectorField() {
 	var stepX = (plot.xmax-plot.xmin)/30;
 	var stepY = (plot.ymax-plot.ymin)/30;
 
+	var calcX;
+	var calcY;
+	var angle;
+
 	//placed outside for performance
 	var i;
 	var j;
 	for (i = 0; i < 30; ++i) {
 		for(j = 0; j < 30; ++j) {
 			//For clarity. Calculated values
-			var calcX = plot.xmin + stepX*i + offsetX;
-			var calcY = plot.ymin + stepY*j + offsetY;
+			calcX = plot.xmin + stepX*i + offsetX;
+			calcY = plot.ymin + stepY*j + offsetY;
 			//We calculate angle of vector
 			//and convert to degrees
-			var angle = Math.atan2(
+			angle = Math.atan2(
 				plot.yFunc(calcX,calcY),
 				plot.xFunc(calcX,calcY))
 				*180/Math.PI;
@@ -226,13 +230,13 @@ function drawTrajectory(initX, initY) {
 			ctx.strokeStyle = "indigo";
 		} else if (5*minScale >= Math.max(Math.abs(tempX),Math.abs(tempY))) {
 			ctx.strokeStyle = "blue";
-		} else if (10*minScale >= Math.max(Math.abs(tempX),Math.abs(tempY))) {
-			ctx.strokeStyle = " #00cc33"; //Darker green
 		} else if (30*minScale >= Math.max(Math.abs(tempX),Math.abs(tempY))) {
-			ctx.strokeStyle = "#73e600"; //Lighter green
-		} else if (40*minScale >= Math.max(Math.abs(tempX),Math.abs(tempY))) {
-			ctx.strokeStyle = "#e6e600"; //Yellowish
+			ctx.strokeStyle = " #00cc33"; //Darker green
 		} else if (60*minScale >= Math.max(Math.abs(tempX),Math.abs(tempY))) {
+			ctx.strokeStyle = "#73e600"; //Lighter green
+		} else if (150*minScale >= Math.max(Math.abs(tempX),Math.abs(tempY))) {
+			ctx.strokeStyle = "#e6e600"; //Yellowish
+		} else if (250*minScale >= Math.max(Math.abs(tempX),Math.abs(tempY))) {
 			ctx.strokeStyle = "orange";
 		} else {
 			ctx.strokeStyle = "red";
@@ -296,9 +300,16 @@ document.getElementById("plotButton").addEventListener("click", function (){
 		plot.xmin = Number(document.getElementById("xmin").value);
 		plot.xmax = Number(document.getElementById("xmax").value);
 		plot.ymin = Number(document.getElementById("ymin").value);
-		plot.ymax = Number(document.getElementById("ymax").value);
-		plot.xFunc = funcs[2*document.getElementById("dropSelect").selectedIndex];
-		plot.yFunc = funcs[2*document.getElementById("dropSelect").selectedIndex+1];
+		plot.ymax = Number(document.getElementById("ymax").value);	
+		//Check to see which mode is selected
+		if (document.getElementById("dropRadio").checked) {
+			plot.xFunc = funcs[2*document.getElementById("dropSelect").selectedIndex];
+			plot.yFunc = funcs[2*document.getElementById("dropSelect").selectedIndex+1];
+		} else if (document.getElementById("matrixRadio").checked) {	
+			plot.xFunc = matrixXFunc;
+			plot.yFunc = matrixYFunc;
+		} else {}
+			
 		drawPlot();
 	}
 });
