@@ -185,15 +185,21 @@ function drawTrajectory(initX, initY) {
 	var step;
 	var minScale = getMinScale(100);
 	var i;
-	//Used for calculations
-	var tempX = initX;
-	var tempY = initY;
+	//Used for calculations. Specifically tempX and Y
+	//are used for finding step size. They give the general
+	//magnitude difference between next and previous point
+	var tempX = 0;
+	var tempY = 0;
+	var calc1X = 0;
+	var calc1Y = 0;
 
 	for(i = 0; i < 200; ++i) {
 		ctx.beginPath();
 		ctx.moveTo(convertXCoord(initX), convertYCoord(initY));
 		tempX = plot.xFunc(initX, initY);
 		tempY = plot.yFunc(initX, initY);
+		calcX = initX;
+		calcY = initY;
 
 		//Compute the step size based on magnitude of difference
 		//between previous and next point. This is done so that
@@ -212,8 +218,13 @@ function drawTrajectory(initX, initY) {
 		} else {
 			step = minScale;
 		}
-		initX+=step*tempX;
-		initY+=step*tempY;
+
+		//Trial step
+		calcX+=step*tempX;
+		calcY+=step*tempY;
+
+		initX+=0.5*(tempX+plot.xFunc(calcX,calcY))*step;
+		initY+=0.5*(tempY+plot.yFunc(calcX,calcY))*step;
 
 		//Check to see how 'fast' particle is moving.
 		//indigo slow, red FAST.
