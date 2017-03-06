@@ -197,7 +197,7 @@ function drawTrajectory(initX, initY) {
 	var calc1X = 0;
 	var calc1Y = 0;
 
-	for(i = 0; i < 250; ++i) {
+	for(i = 0; i < 300; ++i) {
 		ctx.beginPath();
 		ctx.moveTo(convertXCoord(initX), convertYCoord(initY));
 		tempX = plot.xFunc(initX, initY);
@@ -297,6 +297,7 @@ document.getElementById("manualRadio").addEventListener("click", function (){
 	document.getElementById("matrixForm").style.display = "none";
 	document.getElementById("manualForm").style.display = "inline";
 	document.getElementById("loktaForm").style.display = "none";
+	drawPlot();
 });
 
 document.getElementById("loktaRadio").addEventListener("click", function (){
@@ -306,6 +307,7 @@ document.getElementById("loktaRadio").addEventListener("click", function (){
 	document.getElementById("loktaForm").style.display = "inline";
 	plot.xFunc = loktaXFunc;
 	plot.yFunc = loktaYFunc;
+	drawPlot();
 });
 
 //Plot vector field button handling
