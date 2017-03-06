@@ -35,8 +35,6 @@ Each column is in the same row*/
 canvas {
 	margin: auto;
 	display: block;
-	width: 800px;
-	height: 800px;
 	border: 1px solid;
 }
 	
@@ -68,7 +66,9 @@ input[type = "number"] {
 }
 
 [class$=SliderDiv] {
-	min-width: 350px;	
+	float: left;
+	width: 90%;
+	min-width: 350px;
 }
 
 #matrixForm {

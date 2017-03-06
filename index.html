@@ -15,7 +15,7 @@
 
 <div class = "plotColumn">
 	<p id = "info">Click on the plot to generate a trajectory</p>
-	<canvas></canvas>
+	<canvas id = "plotCanvas" width = "800px" height = "800px"></canvas>
 </div>
 
 <div class = "otherColumn">
@@ -40,21 +40,21 @@
 	<form id = "boundsForm">
 		<div class = "boundsDiv">
 		<label> min x:
-		<input id = "xmin" type = "number" value = -10></input>
+		<input id = "xmin" type = "number" value = -10 step = "any"></input>
 		</label>
 
 		<label> max x:
-		<input id = "xmax" type = "number" value = 10></input>
+		<input id = "xmax" type = "number" value = 10 step = "any"></input>
 		</label>
 		</div>
 
 		<div class = "boundsDiv">
 		<label> min y:
-		<input id = "ymin" type = "number" value = -10></input>
+		<input id = "ymin" type = "number" value = -10 step = "any"></input>
 		</label>
 
 		<label> max y:
-		<input id = "ymax" type = "number" value = 10></input>
+		<input id = "ymax" type = "number" value = 10 step = "any"></input>
 		</label>
 		</div>
 	</form>
@@ -62,33 +62,44 @@
 	<form id = "dropForm">
 			<div class = "dropDiv">
 			<label> System Select:
-			<select>
-				<option>test</option>
+			<select id = "dropSelect">
+				<option selected>x' = -y-0.01x(x^2+y^2); y' = x-0.01y(x^2+y^2)</option>
+				<option>x' = x(3.5-x-2.5y); y' = y(2.5-x-y)</option>
+				<option>x' = y; y' = x-x^3 </option>
+				<option>x' = y-y^3; y' = -x-y^2 </option>
+				<option>x' = y; y' = -sin(x) </option> 
 			</select>
 			</label>
 			</div>
-		</form>
+	</form>
 
-		<form id = "matrixForm">
-			<div class = "aSliderDiv"><label> a: 
-			<input id = "aSlider" type = "range" min = -5 max = 5 value = 0 step = 0.1></input>
-			</label></div>
+	<form id = "matrixForm">
+		<div class = "aSliderDiv"><label> a: 
+		<input id = "aSlider" type = "range" min = -5 max = 5 value = 0 step = 0.1></input>
+		</label>
+		<p id = "aValue" style = "width: 20%; float: right;">0</p>
+		</div>
 
-			<div class = "bSliderDiv"><label> b:
-			<input id = "aSlider" type = "range" min = -5 max = 5 value = 0 step = 0.1></input>
-			</label></div>
+		<div class = "bSliderDiv"><label> b:
+		<input id = "bSlider" type = "range" min = -5 max = 5 value = 0 step = 0.1></input>
+		</label>
+		<p id = "bValue" style = "width: 20%; float: right;">0</p>
+		</div>
 
-			<div class = "cSliderDiv"><label> c: 
-			<input id = "aSlider" type = "range" min = -5 max = 5 value = 0 step = 0.1></input>
-			</label></div>
+		<div class = "cSliderDiv"><label> c: 
+		<input id = "cSlider" type = "range" min = -5 max = 5 value = 0 step = 0.1></input>
+		</label>
+		<p id = "cValue" style = "width: 20%; float: right;">0</p>
+		</div>
 
-			<div class = "dSliderDiv"><label> d: 
-			<input id = "aSlider" type = "range" min = -5 max = 5 value = 0 step = 0.1></input>
-			</label></div>
-		</form>
+		<div class = "dSliderDiv"><label> d: 
+		<input id = "dSlider" type = "range" min = -5 max = 5 value = 0 step = 0.1></input>
+		</label>
+		<p id = "dValue" style = "width: 20%; float: right;">0</p>
+		</div>
+	</form>
 
-		<form id = "manualForm"></form>
-
+	<form id = "manualForm"></form>
 		<div class = "buttonDiv">
 		<button id = "plotButton" type = "button">
 		Plot Vector Field</button>
@@ -96,8 +107,10 @@
 		<div>
 		<p id = "invalidPar">Invalid Entry. Please Try again.</p>
 		</div>
+	</form>
 </div>
 
+<script src = "source/vectorFunctions.js"></script>
 <script src = "source/script.js"></script>
 </body>
 
