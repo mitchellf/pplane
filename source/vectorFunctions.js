@@ -9,7 +9,11 @@ funcs = [firstX,
 	fourthX,
 	fourthY,
 	fifthX,
-	fifthY
+	fifthY,
+	sixthX,
+	sixthY,
+	seventhX,
+	seventhY
 ]
 
 //Various systems for use
@@ -56,6 +60,25 @@ function fifthX(x, y) {
 
 function fifthY(x, y) {
 	return -Math.sin(x);
+}
+
+//7.3.1 Poincare bendixon example
+//Should have closed orbit between 1/sqrt(2) = 0.7 and 1
+function sixthX(x,y) {
+	return x-y-x*(Math.pow(x,2)+5*Math.pow(y,2));
+}
+
+function sixthY(x,y) {
+	return x + y - y*(Math.pow(x,2) + Math.pow(y,2));
+}
+
+//7.1.2 van der pols mu = -1.5
+function seventhX(x,y) {
+	return y;
+}
+
+function seventhY(x,y) {
+	return -1.5*(Math.pow(x,2)-1)*y-x;
 }
 
 //Matrix object for use in matrix entry plotting
