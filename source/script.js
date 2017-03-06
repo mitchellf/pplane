@@ -1,199 +1,166 @@
-var mainCanvas = document.getElementById("mainCanvas");
-var mainCtx = mainCanvas.getContext("2d");
-var plotCanvas = document.getElementById("plotCanvas");
-var plotCtx = plotCanvas.getContext("2d");
+var canvas = document.getElementById("plotCanvas");
+var ctx = canvas.getContext("2d");
 
+//Class to hold some plot properties, etc.
 var plot = {
 	//Plot bounds
-	xMax: 5,
-	xMin: -5,
-	yMax: 5,
-	yMin: -5,
-	//Function selected on drop down
-	selectedFunc: 0,
-	//Coefficients for matrix entry
-	a: -1,
-	b: -2,
-	c: -1,
-	d: 2,
-	//Functions available through drop down
-	funcs: [
-		firstX,
-		firstY,
-		secondX,
-		secondY,
-		thirdX,
-		thirdY,
-		fourthX,
-		fourthY,
-		fifthX,
-		fifthY
-		]
-};
-
-//These could probably be put somehwere else
-function matrixXFunc(inputX,inputY) {
-	return plot.a*inputX + plot.b*inputY;
-}
-
-function matrixYFunc(inputX,inputY) {
-	return plot.c*inputX + plot.d*inputY;
+	xmin: -10,
+	xmax: 10,
+	ymin: -10,
+	ymax: 10,
+	xFunc: firstX, 
+	yFunc: firstY
 }
 
 
-
-
-
-window.onload = function(){
-	drawPlot(plot.funcs[2*plot.selectedFunc],
-		plot.funcs[2*plot.selectedFunc+1]);
+window.onload = function() {
+	drawPlot();
 }
 
 
-
-
+function drawPlot(){
+	ctx.clearRect(0,0,800,800);
+//	drawPlotLabels();
+	drawPlotAxes();
+	drawVectorField();
+}
 
 /*
-Draws plot labels onto canvas.
-Default plot with (0,0) at center and
-(+-10,+-10) at the corners
-
+Draws plot labels based on user input values for plot
+boundaries. Draws labels directly onto plot canvas at
+respective corners.
 */
 function drawPlotLabels() {
-	//Set custom font for plot labels
-	mainCtx.save();
-	mainCtx.font = "15px sans-serif";
-	mainCtx.fillText(String(plot.yMax), 10, 65);
-	mainCtx.fillText(String(plot.yMin), 10, 650);
-	mainCtx.fillText(String(plot.xMin), 50, 690);
-	mainCtx.fillText(String(plot.xMax), 635, 690);
-	mainCtx.restore();
+	ctx.save();
+	ctx.beginPath();
+	ctx.font = "bold 20px sans-serif";
+	ctx.fillText(String(plot.xmax),765,790);
+	ctx.fillText(String(plot.xmin),50,790);
+	ctx.fillText(String(plot.ymax), 10,20);
+	ctx.fillText(String(plot.ymin),10,770);
+	ctx.closePath();
+	ctx.restore();
 }
 
 /*
-Modifies input x coordinate relative to plot
-into coordinate relative to canvas.
-For example with default plot settings inputing (0,0)
-returns (300,300)
+Takes in x coordinate relative to plot
+and converts to coordinate relative to
+canvas.
 
+example for default plot
+convertXCoord(0) returns 400
 */
-function convertXCoordinate(inputX) {
+function convertXCoord(inputX) {
 	//Each pixel on the plot corresponds to
-	//(xMax-xMin)/600 units.
+	//(xMax-xMin)/800 units.
 	//So the inputX relative to the canvas is
 	//The number of units from xMin, scaled by
-	//((xMax-xMin)/600)^-1.
+	//((xMax-xMin)/800)^-1.
 	
 	//Note we do not check for division by 0 here.
 	//We catch xMax=xMin case elsewhere
-	var temp = Math.floor((inputX-plot.xMin)/((plot.xMax-plot.xMin) / 600));
-	return temp;
+	return Math.floor((inputX-plot.xmin)/((plot.xmax-plot.xmin) / 800));
 }
 
 /*
-Modifies input y coordinate relative to plot
-into coordinate relative to canvas.
+Takes in y coordinate relative to plot
+and converts to coordinate relative to
+canvas.
 
+example for default plot
+convertYCoord(0) returns 400
 */
-function convertYCoordinate(inputY) {
-	var temp = Math.floor((plot.yMax - inputY)/((plot.yMax-plot.yMin) / 600));
-	return temp;
+function convertYCoord(inputY) {
+	return Math.floor((plot.ymax - inputY)/((plot.ymax-plot.ymin) / 800));
 }
 
-/*
-Draws coordinate axes onto canvas.
-Default plot with (0,0) at center
-*/
-function drawAxes() {
-	//We use these for drawing axes
-	var tempX = 0;
-	var tempY = 0;
-	
-	//Check if we need to draw the x-axis
-	if (plot.yMin <= 0 && 0 <= plot.yMax) {
-		var tempY = convertYCoordinate(0);
-
-		plotCtx.beginPath();
-		plotCtx.moveTo(0, tempY);
-		plotCtx.lineTo(600, tempY);
-		plotCtx.strokeStyle = "blue";
-		plotCtx.stroke();
-		plotCtx.closePath();
-	}
+function drawPlotAxes() {
+	ctx.save();
+	ctx.strokeStyle = "blue";
 	
 	//Check if we need to draw y-axis
-	if (plot.xMin <= 0 && 0 <= plot.xMax) {
-		var tempX = convertXCoordinate(0);
-
-		plotCtx.beginPath();
-		plotCtx.moveTo(tempX, 0);
-		plotCtx.lineTo(tempX, tempY+600);
-		plotCtx.strokeStyle = "blue";
-		plotCtx.stroke();
-		plotCtx.closePath();
+	if (plot.ymin <= 0 && 0 <= plot.ymax) {
+		ctx.beginPath();
+		ctx.moveTo(0,convertYCoord(0));
+		ctx.lineTo(800, convertYCoord(0));
+		ctx.stroke();
+		ctx.closePath();
 	}
+
+	//Check if we need to draw x-axis
+	if (plot.xmin <= 0 && 0 <= plot.xmax) {
+		ctx.beginPath();
+		ctx.moveTo(convertXCoord(0),0);
+		ctx.lineTo(convertXCoord(0),800);
+		ctx.stroke();
+		ctx.closePath();
+	}
+
+
+	ctx.restore();
 }
 
 /*
 Draws small arrow onto plot with given angle at
 given (x,y) position. Input positions are relative
 to the plot, NOT the canvas.
-
 */
 function drawArrow(inputX, inputY, inputAngle) {
-	plotCtx.save();
-	var tempX = convertXCoordinate(inputX);
-	var tempY = convertYCoordinate(inputY);
+	ctx.save();
+	var tempX = convertXCoord(inputX);
+	var tempY = convertYCoord(inputY);
 
-	plotCtx.translate(tempX, tempY);
+	ctx.translate(tempX, tempY);
 	//Not sure about the negative angle here
-	plotCtx.rotate(-inputAngle*Math.PI/180);
+	ctx.rotate(-inputAngle*Math.PI/180);
 
-	plotCtx.beginPath();
+	ctx.beginPath();
 
-	plotCtx.strokeStyle = "black";
-	plotCtx.moveTo(0,0);
-	plotCtx.lineTo(10,0);
-	plotCtx.stroke();
+	ctx.strokeStyle = "black";
+	ctx.moveTo(0,0);
+	ctx.lineTo(12,0);
+	ctx.stroke();
 
-	plotCtx.moveTo(10,0);
-	plotCtx.lineTo(8,2);
-	plotCtx.stroke();
+	ctx.moveTo(12,0);
+	ctx.lineTo(9,3);
+	ctx.stroke();
 
-	plotCtx.moveTo(10,0);
-	plotCtx.lineTo(8,-2);
-	plotCtx.stroke();
+	ctx.moveTo(12,0);
+	ctx.lineTo(9,-3);
+	ctx.stroke();
 
-	plotCtx .closePath();
-	plotCtx.restore();
+	ctx .closePath();
+	ctx.restore();
 }
 
 /*
 Draws vector field for given functions onto plot.
-Draws 400 arrows using the drawArrow function.
-
+Draws arrows using the drawArrow function.
 */
-function drawVectorField(inputXFunc, inputYFunc) {
+function drawVectorField() {
 	//Find a small offset from the plot boundary
 	//for visual reasons. We use 15 pixel offset
-	var offsetX = 15*(plot.xMax-plot.xMin)/600;
-	var offsetY = 15*(plot.yMax-plot.yMin)/600;
-	
+	var offsetX = 16*(plot.xmax-plot.xmin)/800;
+	var offsetY = 16*(plot.ymax-plot.ymin)/800;
+
 	//Find a step size to give us 20 arrows in
 	//each direction
-	var stepX = (plot.xMax-plot.xMin)/20;
-	var stepY = (plot.yMax-plot.yMin)/20;
+	var stepX = (plot.xmax-plot.xmin)/30;
+	var stepY = (plot.ymax-plot.ymin)/30;
 
-	for (var i = 0; i < 20; ++i) {
-		for(var j=0; j < 20; ++j) {
+	//placed outside for performance
+	var i;
+	var j;
+	for (i = 0; i < 30; ++i) {
+		for(j = 0; j < 30; ++j) {
 			//For clarity. Calculated values
-			var calcX = plot.xMin + offsetX + stepX*i;
-			var calcY = plot.yMin + offsetY + stepY*j;
+			var calcX = plot.xmin + stepX*i + offsetX;
+			var calcY = plot.ymin + stepY*j + offsetY;
 			//We calculate angle of vector
 			//and convert to degrees
 			var angle = Math.atan2(
-				inputYFunc(calcX,calcY),
-				inputXFunc(calcX,calcY))
+				plot.yFunc(calcX,calcY),
+				plot.xFunc(calcX,calcY))
 				*180/Math.PI;
 			angle = Math.round(angle);
 			drawArrow(calcX, calcY, angle);
@@ -204,50 +171,49 @@ function drawVectorField(inputXFunc, inputYFunc) {
 /*
 Returns smaller of (xMax-xMin)/inputScale or
 similar with yMax and yMin.
-
 */
 function getMinScale(inputScale) {
-	return Math.min(Math.abs((plot.xMax-plot.xMin)/inputScale),
-			Math.abs((plot.yMax-plot.yMin)/inputScale));
+	return Math.min(Math.abs((plot.xmax-plot.xmin)/inputScale),
+			Math.abs((plot.ymax-plot.ymin)/inputScale));
 }
 
-/*
-Draws a trajectory for given initial condition and two dimensional
-system. First plots curve 'forward' in direction of vector field
-and then 'backwards'. Only plot for a limited number of iterations
+function drawTrajectory(initX, initY) {
+	ctx.save();
+	ctx.lineWidth = 4;
+	ctx.lineJoin = "round";
 
-*/
-function drawTrajectory(initX, initY, xFunc, yFunc) {
-	//Need save and restore so trajectory
-	//drawing settings aren't used elsewhere
-	plotCtx.save();
+	var step;
+	var minScale = getMinScale(100);
+	var i;
+	//Used for calculations
+	var tempX = initX;
+	var tempY = initY;
 
-	//Set step size
-	var step = getMinScale(200);
-	//For use in drawing trajectory. We reuse initX
-	//and initY for calculations
-	var canvasX = convertXCoordinate(initX);
-	var canvasY = convertYCoordinate(initY);
-	//For use in calculations and drawing
-	var tempX = 0;
-	var tempY = 0;
+	for(i = 0; i < 200; ++i) {
+		ctx.beginPath();
+		ctx.moveTo(convertXCoord(initX), convertYCoord(initY));
+		tempX = plot.xFunc(initX, initY);
+		tempY = plot.yFunc(initX, initY);
 
-	plotCtx.lineWidth = 4;
-	plotCtx.lineJoin = "round";
+		//Compute the step size based on magnitude of difference
+		//between previous and next point. This is done so that
+		//when we compute a large difference we don't generate some
+		//obscenely large trajectory that goes off of the plot.
 
-	for(var i = 0; i < 250; ++i) {
-		plotCtx.beginPath();
-		plotCtx.moveTo(canvasX, canvasY);
-
-		//Note here that tempX and tempY represent
-		//the difference between previous and next
-		//position
-		tempX = step*xFunc(initX, initY);
-		tempY = step*yFunc(initX, initY);
-		initX += tempX;
-		initY += tempY;
-		canvasX = convertXCoordinate(initX);
-		canvasY = convertYCoordinate(initY);
+		//We set step size to the inverse of the difference between
+		//previous and next if there is a large difference
+		//and to 200th a size of the plot if the difference is small
+		
+		//If we always set the step size to the inverse of the difference
+		//for very small differences (near stable fixed points say) 
+		//we would generate very large trajectories
+		if(minScale > 0.5/Math.max(Math.abs(tempX),Math.abs(tempY))) {
+			step = 0.5/Math.max(Math.abs(tempX),Math.abs(tempY));
+		} else {
+			step = minScale;
+		}
+		initX+=step*tempX;
+		initY+=step*tempY;
 
 		//Check to see how 'fast' particle is moving.
 		//indigo slow, red FAST.
@@ -256,199 +222,126 @@ function drawTrajectory(initX, initY, xFunc, yFunc) {
 		//it with some percentage of the step size.
 		//This should give us an idea of speed relative to
 		//the plot and it's boundaries
-		if (step >= Math.abs(Math.min(tempX,tempY))) {
-			plotCtx.strokeStyle = "indigo";
-		} else if (2*step >= Math.abs(Math.min(tempX,tempY))) {
-			plotCtx.strokeStyle = "blue";
-		} else if (5*step >= Math.abs(Math.min(tempX,tempY))) {
-			plotCtx.strokeStyle = "green";
-		} else if (10*step >= Math.abs(Math.min(tempX,tempY))) {
-			plotCtx.strokeStyle = "yellow";
-		} else if (15*step >= Math.abs(Math.min(tempX,tempY))) {
-			plotCtx.strokeStyle = "orange";
-		} else if (25*step >= Math.abs(Math.min(tempX,tempY))) {
-			plotCtx.strokeStyle = "orange";
+		if (minScale >= Math.max(Math.abs(tempX),Math.abs(tempY))) {
+			ctx.strokeStyle = "indigo";
+		} else if (5*minScale >= Math.max(Math.abs(tempX),Math.abs(tempY))) {
+			ctx.strokeStyle = "blue";
+		} else if (10*minScale >= Math.max(Math.abs(tempX),Math.abs(tempY))) {
+			ctx.strokeStyle = " #00cc33"; //Darker green
+		} else if (30*minScale >= Math.max(Math.abs(tempX),Math.abs(tempY))) {
+			ctx.strokeStyle = "#73e600"; //Lighter green
+		} else if (40*minScale >= Math.max(Math.abs(tempX),Math.abs(tempY))) {
+			ctx.strokeStyle = "#e6e600"; //Yellowish
+		} else if (60*minScale >= Math.max(Math.abs(tempX),Math.abs(tempY))) {
+			ctx.strokeStyle = "orange";
 		} else {
-			plotCtx.strokeStyle = "red";
+			ctx.strokeStyle = "red";
 		}
-		plotCtx.lineTo(canvasX, canvasY)
-		plotCtx.stroke();
-		plotCtx.closePath();
+		ctx.lineTo(convertXCoord(initX), convertYCoord(initY))
+		ctx.stroke();
+		ctx.closePath();
 
 		//Check to see if we are very near a fixed point
 		//or moving out of the plot boundary.
 		//If so set i to 300 and break loop
-		if (initX < plot.xMin-50*step ||initX > plot.xMax + 50*step
-			|| initY < plot.yMin - 50*step|| initY > plot.yMax + 50*step
-			|| Math.max(Math.abs(tempX),Math.abs(tempY)) <= 0.001*step) {
-			i = 300;
+		if (initX < plot.xmin-50*minScale ||initX > plot.xmax + 50*minScale
+			|| initY < plot.ymin - 50*minScale|| initY > plot.ymax + 50*minScale
+			|| Math.max(Math.abs(tempX),Math.abs(tempY)) <= 0.001*step) 
+		{
+			break;
 		}
 	}
-	plotCtx.restore();
+	ctx.restore();
 }
 
-/*
-Clears the canvases and draws the plot.
+//Mode selection radio button handling
+//Makes selected form visible and hides the others.
+//Sets plot functions to necessary functions
+document.getElementById("dropRadio").addEventListener("click", function (){
+	document.getElementById("dropForm").style.display = "inline";
+	document.getElementById("matrixForm").style.display = "none";
+	document.getElementById("manualForm").style.display = "none";
+	plot.xFunc = firstX;
+	plot.yFunc = firstY;
+	drawPlot();
+});
 
-*/
-function drawPlot(inXFunc, inYFunc) {
-	plotCtx.beginPath();
-	plotCtx.clearRect(0, 0, 600, 600);
-	mainCtx.beginPath();
-	mainCtx.clearRect(0,0,700, 700);
-	drawPlotLabels();
-	drawAxes();
-	//We send the 2*ith and 2*ith+1 functions
-	//from the plot.funcs array to the
-	//drawVectorField function here
-	drawVectorField(inXFunc, inYFunc);
-}
+document.getElementById("matrixRadio").addEventListener("click", function (){
+	document.getElementById("dropForm").style.display = "none";
+	document.getElementById("matrixForm").style.display = "inline";
+	document.getElementById("manualForm").style.display = "none";
+	plot.xFunc = matrixXFunc;
+	plot.yFunc = matrixYFunc;
+	drawPlot();
+});
 
-/*
-Handles user click on plot canvas.
+document.getElementById("manualRadio").addEventListener("click", function (){
+	document.getElementById("dropForm").style.display = "none";
+	document.getElementById("matrixForm").style.display = "none";
+	document.getElementById("manualForm").style.display = "inline";
+});
 
-*/
-function mouseDown(event) {
-	
-	//Mouse click position relative to plot canvas
-	var inputX = event.pageX-70;
-	var inputY = event.pageY-100;
-
-	//converting from coordinates relative to plot canvas
-	//to coordinates relative to plot
-	inputX = plot.xMin + inputX*(plot.xMax-plot.xMin)/600;
-	inputY = plot.yMax - inputY*(plot.yMax - plot.yMin)/600;
-	drawPlot(matrixXFunc, matrixYFunc);
-	//We send the 2*ith and 2*ith+1 functions
-	//from the plot.funcs array to the
-	//drawTrajectory function here
-
-	//If drop down selection radio button selected
-	//use funcs array of vector functions
-	//else use matrix stuff
-	if(document.getElementById("dropDownRadio").checked) {
-		drawPlot(plot.funcs[2*plot.selectedFunc],
-			plot.funcs[2*plot.selectedFunc+1]);
-		//We send the 2*ith and 2*ith+1 functions
-		//from the plot.funcs array to the
-		//drawTrajectory function here
-		drawTrajectory(inputX, inputY,
-			plot.funcs[2*plot.selectedFunc],
-			plot.funcs[2*plot.selectedFunc+1]);
+//Plot vector field button handling
+//Checks for xmax >= xmin, ymax >= ymin, check general validity of form entries.
+//If invalid entry found displays invalid entry notification, otherwise sets
+//plot boundary values, drop down selected, and plots
+document.getElementById("plotButton").addEventListener("click", function (){
+	if (document.getElementById("xmin").value >= document.getElementById("xmax").value ||
+		document.getElementById("ymin").value >= document.getElementById("ymax").value ||
+		!(document.getElementById("boundsForm").checkValidity()))
+	{
+		document.getElementById("invalidPar").style.display = "inline";
 	} else {
-		drawTrajectory(inputX, inputY, matrixXFunc, matrixYFunc);
+		document.getElementById("invalidPar").style.display = "none";
+		plot.xmin = Number(document.getElementById("xmin").value);
+		plot.xmax = Number(document.getElementById("xmax").value);
+		plot.ymin = Number(document.getElementById("ymin").value);
+		plot.ymax = Number(document.getElementById("ymax").value);
+		plot.xFunc = funcs[2*document.getElementById("dropSelect").selectedIndex];
+		plot.yFunc = funcs[2*document.getElementById("dropSelect").selectedIndex+1];
+		drawPlot();
 	}
-}
-/*
-Handles button down on plotVectorField button. Updates various user interface
-entries in the scipt file. Handles basic entry validation.
+});
 
-*/
-function buttonDown() {
-	var inputXMin = Number(document.getElementById("xmin").value);
-	var inputXMax = Number(document.getElementById("xmax").value);
-	var inputYMin = Number(document.getElementById("ymin").value);
-	var inputYMax = Number(document.getElementById("ymax").value);
-	var validInput =
-		document.getElementById("dropDownForm").checkValidity();
-	var alert = document.getElementById("alertPar");
-	
-	//Check if invalid state
-	if (inputXMax <= inputXMin || inputYMax <= inputYMin
-		|| !(validInput)) {
-		alert.innerHTML = "Invalid Entry. Please try again.";
-	//If no invalid state set values and plot
-	} else {
-		alert.innerHTML = "";
-		plot.selectedFunc = document.getElementById("selectFuncs").selectedIndex;
-		plot.xMin = inputXMin;
-		plot.xMax = inputXMax;
-		plot.yMin = inputYMin;
-		plot.yMax = inputYMax;
-		drawPlot(plot.funcs[2*plot.selectedFunc],
-			plot.funcs[2*plot.selectedFunc+1]);
-	}
-}
+//Handle mouseclick on plot. Clears and redraws plot then
+//plots trajectory with initial conditions at mouse click coordinates.
+document.getElementById("plotCanvas").addEventListener("mousedown", function(event) {
+	//Clear plot
+	drawPlot();
 
-/*
-Handles change in selection modes from radio button.
-For dropDown.
+	//For use in calculations
+	var rect = canvas.getBoundingClientRect();
 
-*/
-function dropDownRadio() {
-	document.getElementById("dropDownForm").style.display = "block";
-	document.getElementById("matrixEntryForm").style.display = "none";
-	resetPlot(-10,10,-10,10);
-}
+	//convert from coordinates relative to canvas to coordinates relative
+	//to plot
+	var inputX = plot.xmin + (event.clientX-rect.left)*(plot.xmax-plot.xmin)/800;
+	var inputY = plot.ymax - (event.clientY-rect.top)*(plot.ymax-plot.ymin)/800;
 
-/*
-Handles change in selection modes from radio button.
-For matrixEntry.
+	drawTrajectory(inputX, inputY);
+});
 
-*/
-function matrixEntryRadio() {
-	document.getElementById("dropDownForm").style.display = "none";
-	document.getElementById("matrixEntryForm").style.display = "block";
-	resetPlot(-5,5,-5,5);
-}
 
-/*
-Resets the plot to a default setting.
-xmin/max = -+10;
-ymin/max = -+10;
-xfunc = firstX
-yfunc = firstY
+//Matrix entry slider change handling.
+document.getElementById("aSlider").addEventListener("change",function () {
+	matrix.a = this.value;
+	document.getElementById("aValue").innerHTML = matrix.a;
+	drawPlot();
+});
 
-*/
-function resetPlot(inMinX, inMaxX, inMinY, inMaxY) {
-	plot.xMin = inMinX;
-	plot.xMax = inMaxX;
-	plot.yMin = inMinY;
-	plot.yMax = inMaxY;
-	plot.selectedFunc = 0;
+document.getElementById("bSlider").addEventListener("change",function () {
+	matrix.b = this.value;
+	document.getElementById("bValue").innerHTML = matrix.b;
+	drawPlot();
+});
 
-	//Check if dropDown radio is selected.
-	if(document.getElementById("dropDownRadio").checked) {
-		drawPlot(plot.funcs[2*plot.selectedFunc],
-			plot.funcs[2*plot.selectedFunc+1]);
-	} else {
-		drawPlot(matrixXFunc, matrixYFunc);
-	}
-}
+document.getElementById("cSlider").addEventListener("change",function () {
+	matrix.c = this.value;
+	document.getElementById("cValue").innerHTML = matrix.c;
+	drawPlot();
+});
 
-/*
-Change a coefficient value based on slider
-*/
-function aSliderChange() {
-	plot.a = document.getElementById("aSlider").value;
-	document.getElementById("aSliderLabel").innerHTML = "a: " + plot.a;
-	drawPlot(matrixXFunc, matrixYFunc);
-}
-
-/*
-Change b coefficient value based on slider
-*/
-function bSliderChange() {
-	plot.b = document.getElementById("bSlider").value;
-	document.getElementById("bSliderLabel").innerHTML = "b: " + plot.b;
-	drawPlot(matrixXFunc, matrixYFunc);
-}
-
-/*
-Change c coefficient value based on slider
-*/
-function cSliderChange() {
-	plot.c = document.getElementById("cSlider").value;
-	document.getElementById("cSliderLabel").innerHTML = "c: " + plot.c;
-	drawPlot(matrixXFunc, matrixYFunc);
-}
-
-/*
-Change a coefficient value based on slider
-*/
-function dSliderChange() {
-	plot.d = document.getElementById("dSlider").value;
-	document.getElementById("dSliderLabel").innerHTML = "d: " + plot.d;
-	drawPlot(matrixXFunc, matrixYFunc);
-}
-
+document.getElementById("dSlider").addEventListener("change",function () {
+	matrix.d = this.value;
+	document.getElementById("dValue").innerHTML = matrix.d;
+	drawPlot();
+});

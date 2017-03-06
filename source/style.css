@@ -1,62 +1,84 @@
-#mainCanvas {
-	position: absolute;
-	z-index: 1;
-	top:50px;
-	left:20px;
-	background-color: transparent;
+html {
+	font-family: "Lucida Sans", sans-serif;
 }
 
-#plotCanvas {
-	position: absolute;
-	z-index: 2;
-	top: 100px;
-	left: 70px;
-	border: 1px solid black;
+* {
+	box-sizing: border-box;
 }
 
-#radioSelectionsDiv {
-	position: absolute;
-	left: 800px;
-	top: 100px;
+h2 {
+	padding-bottom: 0;
+	margin-bottom: 0;
 }
 
-#boundsDiv {
-	position: absolute;
-	left: 800px;	
-	top: 130px;
+/*Webpage is divided into two columns.
+Each column is in the same row*/
+[class$=Column] {
+	width: 100%
 }
 
-#funcDropDownDiv {
-	position: absolute;
-	left:800px;
-	top: 220px;
+[class$=Column] {
+	float: left;
+	padding: 16px;
 }
 
-#plotButtonDiv {
-	position: absolute;
-	left:800px;
-	top: 270px;
+/*plotColumn styling*/
+.plotColumn {
+	width: 900px;
 }
 
-#alertPar {
-	position: absolute;
-	left: 800px;
-	top: 300px;
+#info {
+	margin-top: 0;
+	padding-top: 0;
 }
 
-#matrixDescriptionPar {
-	position: absolute;
-	left: 800px;
-	top: 150px;
+canvas {
+	margin: auto;
+	display: block;
+	border: 1px solid;
+}
+	
+/*otherColumn styling*/
+.otherColumn {
+	width: 400px;
 }
 
-#slidersDiv {
-	position:absolute;
-	left: 800px;
-	top: 300px;
+#boundsForm {
+	padding: 10px;
 }
 
-input[type=number] {
-	width: 20%;
-	margin: 2px 0;
+.boundsDiv {
+	padding: 5px;
+	width: 100%;
+	min-width: 350px;
+}
+
+.selectDiv {
+	padding: 10px;
+}
+
+.buttonDiv {
+	padding: 10px;
+}
+
+input[type = "number"] {
+	width: 100px;	
+}
+
+[class$=SliderDiv] {
+	float: left;
+	width: 90%;
+	min-width: 350px;
+}
+
+#matrixForm {
+	display: none;
+}
+
+#manualForm {
+	display: none;
+}
+
+#invalidPar {
+	display: none;
 }

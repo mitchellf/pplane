@@ -1,82 +1,116 @@
 <!DOCTYPE html>
 <html>
-<meta	charset = "UTF-8"
-	name="viewport"
-	content="width=device-width, initial-scale=1.0">
 
 <head>
-	<title> Phase Plane Application </title>
-	<h2> Phase Plane Application </h2>
-	<link rel = "stylesheet" type="text/css" href="source/style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" charset = "UTF-8">
+<link rel="stylesheet" type="text/css" href="source/style.css">
+<title> Phase Plane Application </title>
 </head>
 
 <body>
-	<p>click on the plot to add a trajectory</p>
-	<canvas id = "mainCanvas" width="700" height="700"></canvas>
-	<canvas id = "plotCanvas" width="600" height="600" onmousedown = "mouseDown(event)"></canvas>
-	
-	<div id="radioSelectionsDiv">
-	<label for = "dropDownRadio">drop down</label>
-	<input type="radio" id="dropDownRadio" name = "radioSelect" checked="checked"
-		onclick = "dropDownRadio()" tabindex = 1></input>
-	<label for = "dropDownRadio">matrix entry</label>
-	<input type="radio" id="matrix entry selection" name = "radioSelect"
-		onclick = "matrixEntryRadio()" tabindex = 2>
+<div class = "header">
+	<h2> Phase Plane Application </h2>
+</div>
+
+<div class = "plotColumn">
+	<p id = "info">Click on the plot to generate a trajectory</p>
+	<canvas id = "plotCanvas" width = "800px" height = "800px"></canvas>
+</div>
+
+<div class = "otherColumn">
+	<div class = "modeSelectDiv">
+	<label>
+	<input id = "dropRadio" type = "radio" name = "modeRadio" checked></input>
+	Drop Down Selection</label>
 	</div>
 
-	<form id = "dropDownForm">
-		<div id = "boundsDiv">
-		<label for ="xmin">min x: </label>
-		<input type="number" id="xmin" value = -5 tabindex = 3 required step = "any">
-		<label for ="xmax">max x: </label>
-		<input type="number" id="xmax" value = 5 tabindex = 4 required step = "any">
+	<div class = "modeSelectDiv">
+	<label>
+	<input id = "matrixRadio" type = "radio" name = "modeRadio" ></input>
+	Matrix Entry</label>
+	</div>
 
-		<br>
+	<div class = "modeSelectDiv">
+	<label>
+	<input id = "manualRadio" type = "radio" name = "modeRadio" ></input>
+	Manual Entry</label>
+	</div>
 
-		<label for ="ymin">min y: </label>
-		<input type="number" id="ymin" value = -5 tabindex = 5 required step = "any">
-		<label for ="ymax">max y: </label>
-		<input type="number" id="ymax" value = 5 tabindex = 6 required step = "any">
+	<form id = "boundsForm">
+		<div class = "boundsDiv">
+		<label> min x:
+		<input id = "xmin" type = "number" value = -10 step = "any"></input>
+		</label>
+
+		<label> max x:
+		<input id = "xmax" type = "number" value = 10 step = "any"></input>
+		</label>
 		</div>
 
-		<div id = "funcDropDownDiv">
-		<label for ="selectFuncs">select functions: </label>
-		<select id = "selectFuncs" tabindex = 7>
-			<option selected>x' = x-y; y' = x+y</option>
-			<option>x' = 2x-y; y' = x+2y</option>
-			<option>x' = y; y' = x-x^3 </option>
-			<option>x' = y-y^3; y' = -x-y^2 </option>
-			<option>x' = y; y' = -sin(x) </option> 
-		</select>
-		</div>
+		<div class = "boundsDiv">
+		<label> min y:
+		<input id = "ymin" type = "number" value = -10 step = "any"></input>
+		</label>
 
-		<div id = "plotButtonDiv">
-		<button id = "plotButton" type = "button" tabindex = 6 onclick = "buttonDown()"
-			tabindex = 9>
-		Plot vector field
-		</button>
+		<label> max y:
+		<input id = "ymax" type = "number" value = 10 step = "any"></input>
+		</label>
 		</div>
-		<p id = "alertPar"></p>
 	</form>
 
-	<form id = "matrixEntryForm" style = "display: none">
-		<p id = "matrixDescriptionPar">System <br> x' = ax + by <br> y' = cx + dy</p>
-		<div id = "slidersDiv">
-		<input id = "aSlider" type = "range" value = 0 min = -5 max = 5 step = 0.1
-			onchange = "aSliderChange()">
-		<label id = "aSliderLabel" for = "aSlider">a: 0</label><br>
-		<input id = "bSlider" type = "range" value = 0 min = -5 max = 5 step = 0.1
-			onchange = "bSliderChange()">
-		<label id = "bSliderLabel" for = "bSlider">b: 0</label><br>
-		<input id = "cSlider" type = "range" value = 0 min = -5 max = 5 step = 0.1
-			onchange = "cSliderChange()">
-		<label id = "cSliderLabel" for = "cSlider">c: 0</label><br>
-		<input id = "dSlider" type = "range" value = 0 min = -5 max = 5 step = 0.1
-			onchange = "dSliderChange()">
-		<label id = "dSliderLabel" for = "dSlider">a: 0</label>
+	<form id = "dropForm">
+			<div class = "dropDiv">
+			<label> System Select:
+			<select id = "dropSelect">
+				<option selected>x' = -y-0.01x(x^2+y^2); y' = x-0.01y(x^2+y^2)</option>
+				<option>x' = x(3.5-x-2.5y); y' = y(2.5-x-y)</option>
+				<option>x' = y; y' = x-x^3 </option>
+				<option>x' = y-y^3; y' = -x-y^2 </option>
+				<option>x' = y; y' = -sin(x) </option> 
+			</select>
+			</label>
+			</div>
 	</form>
 
-	<script src = "source/vectorFunctions.js"></script>
-	<script src = "source/script.js"></script>
+	<form id = "matrixForm">
+		<div class = "aSliderDiv"><label> a: 
+		<input id = "aSlider" type = "range" min = -5 max = 5 value = 0 step = 0.1></input>
+		</label>
+		<p id = "aValue" style = "width: 20%; float: right;">0</p>
+		</div>
+
+		<div class = "bSliderDiv"><label> b:
+		<input id = "bSlider" type = "range" min = -5 max = 5 value = 0 step = 0.1></input>
+		</label>
+		<p id = "bValue" style = "width: 20%; float: right;">0</p>
+		</div>
+
+		<div class = "cSliderDiv"><label> c: 
+		<input id = "cSlider" type = "range" min = -5 max = 5 value = 0 step = 0.1></input>
+		</label>
+		<p id = "cValue" style = "width: 20%; float: right;">0</p>
+		</div>
+
+		<div class = "dSliderDiv"><label> d: 
+		<input id = "dSlider" type = "range" min = -5 max = 5 value = 0 step = 0.1></input>
+		</label>
+		<p id = "dValue" style = "width: 20%; float: right;">0</p>
+		</div>
+	</form>
+
+	<form id = "manualForm"></form>
+		<div class = "buttonDiv">
+		<button id = "plotButton" type = "button">
+		Plot Vector Field</button>
+		</div>
+		<div>
+		<p id = "invalidPar">Invalid Entry. Please Try again.</p>
+		</div>
+	</form>
+</div>
+
+<script src = "source/vectorFunctions.js"></script>
+<script src = "source/script.js"></script>
 </body>
+
 </html>
