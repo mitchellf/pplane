@@ -79,6 +79,10 @@ input[type = "number"] {
 	display: none;
 }
 
+#loktaForm {
+	display: none;
+}
+
 #invalidPar {
 	display: none;
 }

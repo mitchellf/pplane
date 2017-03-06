@@ -197,7 +197,7 @@ function drawTrajectory(initX, initY) {
 	var calc1X = 0;
 	var calc1Y = 0;
 
-	for(i = 0; i < 200; ++i) {
+	for(i = 0; i < 250; ++i) {
 		ctx.beginPath();
 		ctx.moveTo(convertXCoord(initX), convertYCoord(initY));
 		tempX = plot.xFunc(initX, initY);
@@ -276,6 +276,7 @@ document.getElementById("dropRadio").addEventListener("click", function (){
 	document.getElementById("dropForm").style.display = "inline";
 	document.getElementById("matrixForm").style.display = "none";
 	document.getElementById("manualForm").style.display = "none";
+	document.getElementById("loktaForm").style.display = "none";
 	plot.xFunc = firstX;
 	plot.yFunc = firstY;
 	drawPlot();
@@ -285,6 +286,7 @@ document.getElementById("matrixRadio").addEventListener("click", function (){
 	document.getElementById("dropForm").style.display = "none";
 	document.getElementById("matrixForm").style.display = "inline";
 	document.getElementById("manualForm").style.display = "none";
+	document.getElementById("loktaForm").style.display = "none";
 	plot.xFunc = matrixXFunc;
 	plot.yFunc = matrixYFunc;
 	drawPlot();
@@ -294,6 +296,16 @@ document.getElementById("manualRadio").addEventListener("click", function (){
 	document.getElementById("dropForm").style.display = "none";
 	document.getElementById("matrixForm").style.display = "none";
 	document.getElementById("manualForm").style.display = "inline";
+	document.getElementById("loktaForm").style.display = "none";
+});
+
+document.getElementById("loktaRadio").addEventListener("click", function (){
+	document.getElementById("dropForm").style.display = "none";
+	document.getElementById("matrixForm").style.display = "none";
+	document.getElementById("manualForm").style.display = "none";
+	document.getElementById("loktaForm").style.display = "inline";
+	plot.xFunc = loktaXFunc;
+	plot.yFunc = loktaYFunc;
 });
 
 //Plot vector field button handling
@@ -319,7 +331,11 @@ document.getElementById("plotButton").addEventListener("click", function (){
 		} else if (document.getElementById("matrixRadio").checked) {	
 			plot.xFunc = matrixXFunc;
 			plot.yFunc = matrixYFunc;
-		} else {}
+		} else if (document.getElementById("manualRadio").checked){
+		} else if (document.getElementById("loktaRadio").checked){
+			plot.xFunc = loktaXFunc;
+			plot.yFunc = loktaYFunc;
+		}
 			
 		drawPlot();
 	}
@@ -367,3 +383,18 @@ document.getElementById("dSlider").addEventListener("change",function () {
 	document.getElementById("dValue").innerHTML = matrix.d;
 	drawPlot();
 });
+
+//lokta slider change handling
+document.getElementById("loktaASlider").addEventListener("change",function () {
+	lokta.a = this.value;
+	document.getElementById("loktaAValue").innerHTML = lokta.a;
+	drawPlot();
+});
+
+document.getElementById("loktaBSlider").addEventListener("change",function () {
+	lokta.b = this.value;
+	document.getElementById("loktaBValue").innerHTML = lokta.b;
+	drawPlot();
+});
+
+
