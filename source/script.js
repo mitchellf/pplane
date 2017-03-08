@@ -397,4 +397,17 @@ document.getElementById("loktaBSlider").addEventListener("change",function () {
 	drawPlot();
 });
 
-
+//Projector mode checkbox handling
+document.getElementById("projectorCheckBox").addEventListener("change", function () {
+	if (this.checked) {
+		document.getElementById("otherColumnDiv").style.width = "700px";
+		document.documentElement.style.fontSize = "160%";
+		document.getElementById("infoHeader").innerHTML = "Phase Plane Application - mitchellf.github.io/pplane/";
+	} else {
+		document.getElementById("otherColumnDiv").style.width = "400px";
+		document.documentElement.style.fontSize = "100%";
+		document.getElementById("infoHeader").innerHTML = "Phase Plane Application";
+	}
+});
+;
+		
